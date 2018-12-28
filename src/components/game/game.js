@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
-import {range} from 'ramda'
+import {clone, range} from 'ramda'
+import {interval} from 'rxjs'
 
 import {Board} from '../board/board'
+import {scan} from 'rxjs/operators'
 
 const BLANK = 'BLANK'
 const RED = 'red'
@@ -17,20 +19,26 @@ export class Game extends Component {
     super(props)
 
     this.state = {
+      block: [0, 0],
       board: range(0, props.size)
         .map(() => range(0, props.size)
           .map(() => BLANK))
     }
 
-    this.state.board[0][1] = RED
-    this.state.board[0][3] = BLUE
-    this.state.board[1][2] = GREEN
+    this.tick$ = interval(500)
+    this.block$ = this.tick$.pipe(
+      scan((acc) => (acc + 1) % props.size, 0)
+    )
+
+    this.block$.subscribe((y) => this.setState({block: [0, y]}))
   }
 
   render () {
-    const {board} = this.state
+    const {board, block} = this.state
+    const boardWithBlock = clone(board)
+    boardWithBlock[block[1]][block[0]] = RED
     return (
-      <Board board={board} />
+      <Board board={boardWithBlock} />
     )
   }
 }
