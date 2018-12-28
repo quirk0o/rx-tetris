@@ -1,14 +1,13 @@
 import React from 'react'
-import {range} from 'ramda'
 
 import './row.css'
 
 import {Cell} from './cell'
 
-export const Row = ({size}) => (
+export const Row = ({row}) => (
   <div className="board__row">
-    {range(0, size).map((i) => (
-      <Cell key={i} />
+    {row.map((color, idx) => (
+      <Cell key={idx} color={color} />
     ))}
   </div>
 )

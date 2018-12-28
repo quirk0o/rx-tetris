@@ -6,7 +6,8 @@
     "ramda": "^0.26.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-scripts": "2.1.2"
+    "react-scripts": "2.1.2",
+    "rxjs": "^6.3.3"
   },
   "scripts": {
     "start": "react-scripts start",

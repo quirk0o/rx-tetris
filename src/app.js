@@ -2,10 +2,10 @@ import React from 'react'
 
 import './app.css'
 
-import {Board} from './components/board/board'
+import {Game} from './components/game/game'
 
 export const App = () => (
   <div className="app">
-    <Board />
+    <Game />
   </div>
 )
