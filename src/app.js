@@ -1,10 +1,11 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-export class App extends Component {
-  render () {
-    return (
-      <div>
-      </div>
-    )
-  }
-}
+import './app.css'
+
+import {Board} from './components/board/board'
+
+export const App = () => (
+  <div className="app">
+    <Board />
+  </div>
+)

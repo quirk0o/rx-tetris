@@ -1,0 +1,6 @@
+.board__row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: min-content;
+}
