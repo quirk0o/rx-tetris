@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {clone, range} from 'ramda'
+import {clone, range, transpose} from 'ramda'
 import {interval} from 'rxjs'
 
 import {Board} from '../board/board'
-import {filter, scan, tap} from 'rxjs/operators'
+import {filter, scan, map, withLatestFrom} from 'rxjs/operators'
 
 const BLANK = 'BLANK'
 const RED = 'red'
@@ -30,14 +30,25 @@ export class Game extends Component {
       scan((acc) => [0, (acc[1] + 1) % props.size], [0, 0])
     )
 
-    this.board$ = this.block$.pipe(
-      tap(console.log.bind(console)),
-      filter(([_, y]) => y === props.size - 1),
+    this.column$ = this.block$.pipe(
       scan((board, block) => {
+        const [x, y] = block
+        if (y === this.props.size - 1 || board[x][y + 1] !== BLANK) {
+          const boardWithBlock = clone(board)
+          boardWithBlock[x][y] = RED
+          return boardWithBlock
+        }
+        return board
+      }, this.state.board)
+    )
+
+    this.board$ = this.column$.pipe(
+      map(transpose),
+      withLatestFrom(this.block$, (board, block) => {
         const boardWithBlock = clone(board)
         boardWithBlock[block[1]][block[0]] = RED
         return boardWithBlock
-      }, this.state.board)
+      })
     )
 
     this.block$.subscribe((block) => this.setState({block}))
@@ -45,11 +56,10 @@ export class Game extends Component {
   }
 
   render () {
-    const {board, block} = this.state
-    const boardWithBlock = clone(board)
-    boardWithBlock[block[1]][block[0]] = RED
+    const {board} = this.state
+
     return (
-      <Board board={boardWithBlock} />
+      <Board board={board} />
     )
   }
 }
